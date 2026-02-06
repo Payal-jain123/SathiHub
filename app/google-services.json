@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "763300111755",
+    "firebase_url": "https://sathihub-1474e-default-rtdb.firebaseio.com",
+    "project_id": "sathihub-1474e",
+    "storage_bucket": "sathihub-1474e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763300111755:android:eb6cc9d68610e29d18bb8e",
+        "android_client_info": {
+          "package_name": "com.example.sathihub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8DeF5Tn4v1JEMPYiENq4kxoa8OkgbzvU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

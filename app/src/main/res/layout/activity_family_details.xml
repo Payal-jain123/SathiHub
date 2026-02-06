@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FCE4EC"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- TITLE -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Family Details"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#C2185B"
+            android:gravity="center"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Father Occupation -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Father Occupation"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:id="@+id/etFatherOccupation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter father occupation"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Mother Occupation -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mother Occupation"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:id="@+id/etMotherOccupation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter mother occupation"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Family Type -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Family Type"
+            android:textStyle="bold"/>
+
+        <Spinner
+            android:id="@+id/spFamilyType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Brothers -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Number of Brothers"
+            android:textStyle="bold"/>
+
+        <Spinner
+            android:id="@+id/spBrothers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Sisters -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Number of Sisters"
+            android:textStyle="bold"/>
+
+        <Spinner
+            android:id="@+id/spSisters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Family Income -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Family Income"
+            android:textStyle="bold"/>
+
+        <Spinner
+            android:id="@+id/spFamilyIncome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Family City -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Family City"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:id="@+id/etFamilyCity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter family city"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Family Status -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Family Status"
+            android:textStyle="bold"/>
+
+        <Spinner
+            android:id="@+id/spFamilyStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Button -->
+        <Button
+            android:id="@+id/btnNext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Continue"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#C2185B"/>
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF0F5"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Upload Photo and Resume"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#C2185B"
+            android:gravity="center"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Profile Image -->
+        <ImageView
+            android:id="@+id/imgProfile"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@mipmap/ic_launcher"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Select Image -->
+        <Button
+            android:id="@+id/btnSelectImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Profile Photo"
+            android:layout_marginBottom="10dp"/>
+
+        <!-- 👇 Resume status text -->
+        <TextView
+            android:id="@+id/tvResumeStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No resume selected"
+            android:textColor="#444444"
+            android:textStyle="italic"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Select Resume -->
+        <Button
+            android:id="@+id/btnSelectResume"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Resume (PDF)"
+            android:layout_marginBottom="10dp"/>
+
+        <!-- About Me -->
+        <EditText
+            android:id="@+id/etAbout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Write something about yourself"
+            android:minLines="3"
+            android:gravity="top"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Finish Button -->
+        <Button
+            android:id="@+id/btnFinish"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Finish Profile"
+            android:backgroundTint="#C2185B"
+            android:textColor="#FFFFFF"/>
+
+    </LinearLayout>
+</ScrollView>
