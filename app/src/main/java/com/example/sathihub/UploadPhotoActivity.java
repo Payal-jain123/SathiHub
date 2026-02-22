@@ -17,7 +17,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -36,6 +38,7 @@ public class UploadPhotoActivity extends AppCompatActivity {
     Uri imageUri, resumeUri;
     FirebaseAuth auth;
 
+    // 🔴 CHECK THESE IN CLOUDINARY DASHBOARD
     String cloudName = "djgnxmqnf";
     String uploadPreset = "sathihub_preset";
 
@@ -83,10 +86,8 @@ public class UploadPhotoActivity extends AppCompatActivity {
 
             if (requestCode == 2) {
                 resumeUri = data.getData();
-
                 String fileName = resumeUri.getLastPathSegment();
                 tvResumeStatus.setText("Selected: " + fileName);
-
                 Toast.makeText(this, "Resume Selected", Toast.LENGTH_SHORT).show();
             }
         }
@@ -109,17 +110,25 @@ public class UploadPhotoActivity extends AppCompatActivity {
 
                 String uid = auth.getCurrentUser().getUid();
 
-                FirebaseDatabase.getInstance().getReference("users")
-                        .child(uid).child("profilePhoto").setValue(imageUrl);
+                FirebaseDatabase.getInstance().getReference("ProfileImage")
+                        .child(uid)
+                        .child("imageUrl")
+                        .setValue(imageUrl);
 
-                FirebaseDatabase.getInstance().getReference("users")
-                        .child(uid).child("resume").setValue(resumeUrl);
+                FirebaseDatabase.getInstance().getReference("ProfileImage")
+                        .child(uid)
+                        .child("resumeUrl")
+                        .setValue(resumeUrl);
 
-                FirebaseDatabase.getInstance().getReference("users")
-                        .child(uid).child("aboutMe").setValue(etAbout.getText().toString());
+                FirebaseDatabase.getInstance().getReference("ProfileImage")
+                        .child(uid)
+                        .child("aboutMe")
+                        .setValue(etAbout.getText().toString());
 
-                FirebaseDatabase.getInstance().getReference("users")
-                        .child(uid).child("profileCompleted").setValue(true);
+                FirebaseDatabase.getInstance().getReference("Users")
+                        .child(uid)
+                        .child("profileCompleted")
+                        .setValue(true);
 
                 Toast.makeText(this, "Profile Completed", Toast.LENGTH_SHORT).show();
 
@@ -127,7 +136,6 @@ public class UploadPhotoActivity extends AppCompatActivity {
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
                 finish();
-
             });
         });
     }
@@ -136,10 +144,13 @@ public class UploadPhotoActivity extends AppCompatActivity {
         new Thread(() -> {
             try {
                 InputStream inputStream = getContentResolver().openInputStream(fileUri);
-                byte[] fileBytes = new byte[inputStream.available()];
-                inputStream.read(fileBytes);
+                byte[] fileBytes = readBytes(inputStream);
 
-                OkHttpClient client = new OkHttpClient();
+                OkHttpClient client = new OkHttpClient.Builder()
+                        .connectTimeout(30, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .writeTimeout(30, TimeUnit.SECONDS)
+                        .build();
 
                 RequestBody requestBody = new MultipartBody.Builder()
                         .setType(MultipartBody.FORM)
@@ -156,8 +167,12 @@ public class UploadPhotoActivity extends AppCompatActivity {
                         .build();
 
                 Response response = client.newCall(request).execute();
-                String json = response.body().string();
 
+                if (!response.isSuccessful()) {
+                    throw new Exception("HTTP Error: " + response.code());
+                }
+
+                String json = response.body().string();
                 JSONObject obj = new JSONObject(json);
                 String fileUrl = obj.getString("secure_url");
 
@@ -166,9 +181,22 @@ public class UploadPhotoActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
                 runOnUiThread(() ->
-                        Toast.makeText(this, "Upload Failed", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(this, "Upload Failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
             }
         }).start();
+    }
+
+    private byte[] readBytes(InputStream inputStream) throws Exception {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int nRead;
+        byte[] data = new byte[4096];
+
+        while ((nRead = inputStream.read(data)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
+
+        buffer.flush();
+        return buffer.toByteArray();
     }
 
     interface CloudinaryCallback {

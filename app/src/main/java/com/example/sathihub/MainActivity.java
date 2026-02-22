@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseAuth auth;
     DatabaseReference userRef;
+
+    boolean isProfileCompleted = false; // 👈 flag
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,41 +40,92 @@ public class MainActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
-        if (auth.getCurrentUser() == null) return;
+        if (auth.getCurrentUser() == null) {
+            finish();
+            return;
+        }
 
         userRef = FirebaseDatabase.getInstance()
-                .getReference("users")
+                .getReference("Users")   // ⚠️ Capital U (same everywhere)
                 .child(auth.getCurrentUser().getUid());
 
-        // Load user photo in TOP and BOTTOM profile
-        userRef.child("profilePhoto").get().addOnSuccessListener(snapshot -> {
-            if (snapshot.exists()) {
-                String photoUrl = snapshot.getValue(String.class);
+        // 🔥 CHECK profileCompleted
+        userRef.child("profileCompleted").get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        Boolean flag = snapshot.getValue(Boolean.class);
+                        if (flag != null) {
+                            isProfileCompleted = flag;
+                        }
+                    } else {
+                        isProfileCompleted = false;
+                    }
 
-                Glide.with(MainActivity.this)
-                        .load(photoUrl)
-                        .into(btnTopProfile);
+                    if (!isProfileCompleted) {
+                        Toast.makeText(MainActivity.this,
+                                "⚠ Please complete your profile to view other users",
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
 
-                Glide.with(MainActivity.this)
-                        .load(photoUrl)
-                        .into(imgBottomProfile);
-            }
-        });
+        // 🔥 Load profile photo
+        userRef.child("profilePhoto").get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        String photoUrl = snapshot.getValue(String.class);
+
+                        Glide.with(MainActivity.this)
+                                .load(photoUrl)
+                                .into(btnTopProfile);
+
+                        Glide.with(MainActivity.this)
+                                .load(photoUrl)
+                                .into(imgBottomProfile);
+                    }
+                });
 
         navProfile.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, ProfileActivity.class)));
 
-        navHome.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, HomeActivity.class)));
+        navHome.setOnClickListener(v -> {
+            if (!isProfileCompleted) {
+                Toast.makeText(this,
+                        "Complete your profile first",
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                startActivity(new Intent(MainActivity.this, HomeActivity.class));
+            }
+        });
 
-        navSearch.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, SearchActivity.class)));
+        navSearch.setOnClickListener(v -> {
+            if (!isProfileCompleted) {
+                Toast.makeText(this,
+                        "Complete your profile first",
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                startActivity(new Intent(MainActivity.this, SearchActivity.class));
+            }
+        });
 
-        navMatches.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, MatchesActivity.class)));
+        navMatches.setOnClickListener(v -> {
+            if (!isProfileCompleted) {
+                Toast.makeText(this,
+                        "Complete your profile first",
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                startActivity(new Intent(MainActivity.this, MatchesActivity.class));
+            }
+        });
 
-        navChats.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, ChatsActivity.class)));
+        navChats.setOnClickListener(v -> {
+            if (!isProfileCompleted) {
+                Toast.makeText(this,
+                        "Complete your profile first",
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                startActivity(new Intent(MainActivity.this, ChatsActivity.class));
+            }
+        });
 
         btnNotification.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, NotificationActivity.class)));

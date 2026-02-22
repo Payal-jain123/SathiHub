@@ -6,16 +6,23 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class EducationDetailsActivity extends AppCompatActivity {
 
-    Spinner spQualification, spOccupation, spSector, spIncome, spLanguage;
+    Spinner spQualification, spOccupation, spSector, spIncome;
+    MultiAutoCompleteTextView etLanguages;   // 🔥 changed
     EditText etOtherOccupation, etOrganization, etCity, etState;
     Button btnNext;
+
+    FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +33,8 @@ public class EducationDetailsActivity extends AppCompatActivity {
         spOccupation = findViewById(R.id.spOccupation);
         spSector = findViewById(R.id.spSector);
         spIncome = findViewById(R.id.spIncome);
-        spLanguage = findViewById(R.id.spLanguage);
+
+        etLanguages = findViewById(R.id.etLanguages); // 🔥 new id
 
         etOtherOccupation = findViewById(R.id.etOtherOccupation);
         etOrganization = findViewById(R.id.etOrganization);
@@ -35,11 +43,17 @@ public class EducationDetailsActivity extends AppCompatActivity {
 
         btnNext = findViewById(R.id.btnNext);
 
+        auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null) {
+            finish();
+            return;
+        }
+
         loadQualification();
         loadOccupation();
         loadSector();
         loadIncome();
-        loadLanguage();
+        loadLanguages();   // 🔥 changed
 
         spOccupation.setOnItemSelectedListener(new SimpleItemSelectedListener() {
             @Override
@@ -53,27 +67,53 @@ public class EducationDetailsActivity extends AppCompatActivity {
             }
         });
 
-        btnNext.setOnClickListener(v -> validateAndNext());
+        loadExistingData(); // ✅ Edit Profile ke liye
+
+        btnNext.setOnClickListener(v -> validateAndSave());
     }
+
+    // ================= LOAD EXISTING DATA =================
+
+    private void loadExistingData() {
+        String uid = auth.getCurrentUser().getUid();
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid)
+                .child("education")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+
+                        setSpinner(spQualification, snapshot.child("qualification").getValue(String.class));
+                        setSpinner(spOccupation, snapshot.child("occupation").getValue(String.class));
+                        setSpinner(spSector, snapshot.child("sector").getValue(String.class));
+                        setSpinner(spIncome, snapshot.child("income").getValue(String.class));
+
+                        etLanguages.setText(snapshot.child("language").getValue(String.class));
+
+                        etOtherOccupation.setText(snapshot.child("otherOccupation").getValue(String.class));
+                        etOrganization.setText(snapshot.child("organization").getValue(String.class));
+                        etCity.setText(snapshot.child("city").getValue(String.class));
+                        etState.setText(snapshot.child("state").getValue(String.class));
+                    }
+                });
+    }
+
+    private void setSpinner(Spinner spinner, String value) {
+        if (value == null) return;
+        ArrayAdapter adapter = (ArrayAdapter) spinner.getAdapter();
+        int pos = adapter.getPosition(value);
+        if (pos >= 0) spinner.setSelection(pos);
+    }
+
+    // ================= LOAD SPINNERS =================
 
     private void loadQualification() {
         String[] data = {
-                "Select",
-                "10th",
-                "12th",
-                "Diploma",
-                "ITI",
-                "Graduate",
-                "Post Graduate",
-                "MBA",
-                "M.Tech",
-                "PhD",
-                "Doctor",
-                "Engineer",
-                "CA",
-                "CS",
-                "ICWA",
-                "Other"
+                "Select", "10th", "12th", "Diploma", "ITI",
+                "Graduate", "Post Graduate", "MBA", "M.Tech",
+                "PhD", "Doctor", "Engineer", "CA", "CS",
+                "ICWA", "Other"
         };
         spQualification.setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, data));
@@ -81,27 +121,12 @@ public class EducationDetailsActivity extends AppCompatActivity {
 
     private void loadOccupation() {
         String[] data = {
-                "Select",
-                "Software Engineer",
-                "Doctor",
-                "Teacher",
-                "Business",
-                "Government Job",
-                "Private Job",
-                "Farmer",
-                "Shop Owner",
-                "Self Employed",
-                "Lawyer",
-                "Chartered Accountant",
-                "Banker",
-                "Defence",
-                "Police",
-                "Professor",
-                "Entrepreneur",
-                "Housewife",
-                "Student",
-                "Unemployed",
-                "Other"
+                "Select", "Software Engineer", "Doctor", "Teacher",
+                "Business", "Government Job", "Private Job",
+                "Farmer", "Shop Owner", "Self Employed",
+                "Lawyer", "Chartered Accountant", "Banker",
+                "Defence", "Police", "Professor", "Entrepreneur",
+                "Housewife", "Student", "Unemployed", "Other"
         };
         spOccupation.setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, data));
@@ -109,13 +134,9 @@ public class EducationDetailsActivity extends AppCompatActivity {
 
     private void loadSector() {
         String[] data = {
-                "Select",
-                "Private Sector",
-                "Government Sector",
-                "Public Sector",
-                "Self Employed",
-                "Business",
-                "Not Working"
+                "Select", "Private Sector", "Government Sector",
+                "Public Sector", "Self Employed",
+                "Business", "Not Working"
         };
         spSector.setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, data));
@@ -123,48 +144,39 @@ public class EducationDetailsActivity extends AppCompatActivity {
 
     private void loadIncome() {
         String[] data = {
-                "Select",
-                "No Income",
-                "Below 1 Lakh",
-                "1 - 2 Lakh",
-                "2 - 3 Lakh",
-                "3 - 5 Lakh",
-                "5 - 7 Lakh",
-                "7 - 10 Lakh",
-                "10 - 15 Lakh",
-                "15 - 20 Lakh",
-                "20 - 30 Lakh",
-                "Above 30 Lakh"
+                "Select", "No Income", "Below 1 Lakh", "1 - 2 Lakh",
+                "2 - 3 Lakh", "3 - 5 Lakh", "5 - 7 Lakh",
+                "7 - 10 Lakh", "10 - 15 Lakh", "15 - 20 Lakh",
+                "20 - 30 Lakh", "Above 30 Lakh"
         };
         spIncome.setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, data));
     }
 
-    private void loadLanguage() {
+    // 🔥 MULTI LANGUAGE LOGIC
+    private void loadLanguages() {
         String[] data = {
-                "Select",
-                "Hindi",
-                "English",
-                "Gujarati",
-                "Marathi",
-                "Punjabi",
-                "Urdu",
-                "Bengali",
-                "Tamil",
-                "Telugu",
-                "Kannada",
-                "Malayalam"
+                "Hindi", "English", "Gujarati", "Marathi",
+                "Punjabi", "Urdu", "Bengali", "Tamil",
+                "Telugu", "Kannada", "Malayalam"
         };
-        spLanguage.setAdapter(new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item, data));
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, data);
+
+        etLanguages.setAdapter(adapter);
+        etLanguages.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
     }
 
-    private void validateAndNext() {
+    // ================= SAVE DATA =================
+
+    private void validateAndSave() {
+
         if (spQualification.getSelectedItemPosition() == 0 ||
                 spOccupation.getSelectedItemPosition() == 0 ||
                 spSector.getSelectedItemPosition() == 0 ||
                 spIncome.getSelectedItemPosition() == 0 ||
-                spLanguage.getSelectedItemPosition() == 0 ||
+                etLanguages.getText().toString().trim().isEmpty() ||
                 etCity.getText().toString().trim().isEmpty() ||
                 etState.getText().toString().trim().isEmpty()) {
 
@@ -172,9 +184,47 @@ public class EducationDetailsActivity extends AppCompatActivity {
             return;
         }
 
+        String uid = auth.getCurrentUser().getUid();
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid).child("education").child("qualification")
+                .setValue(spQualification.getSelectedItem().toString());
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid).child("education").child("occupation")
+                .setValue(spOccupation.getSelectedItem().toString());
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid).child("education").child("sector")
+                .setValue(spSector.getSelectedItem().toString());
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid).child("education").child("income")
+                .setValue(spIncome.getSelectedItem().toString());
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid).child("education").child("language")
+                .setValue(etLanguages.getText().toString().trim());
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid).child("education").child("otherOccupation")
+                .setValue(etOtherOccupation.getText().toString().trim());
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid).child("education").child("organization")
+                .setValue(etOrganization.getText().toString().trim());
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid).child("education").child("city")
+                .setValue(etCity.getText().toString().trim());
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid).child("education").child("state")
+                .setValue(etState.getText().toString().trim());
+
         Toast.makeText(this, "Education Details Saved", Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(EducationDetailsActivity.this, FamilyDetailsActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(this, FamilyDetailsActivity.class));
+        finish();
     }
 }

@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FCE4EC"
+    android:background="@drawable/bg_gradient"
     android:padding="16dp">
 
     <LinearLayout
@@ -129,11 +129,15 @@
             android:text="Languages Known"
             android:textStyle="bold"/>
 
-        <Spinner
-            android:id="@+id/spLanguage"
+        <MultiAutoCompleteTextView
+            android:id="@+id/etLanguages"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"/>
+            android:hint="Select languages (Hindi, English, etc.)"
+            android:padding="10dp"
+            android:layout_marginBottom="20dp"
+            android:inputType="textMultiLine"/>
+
 
         <!-- Button -->
         <Button

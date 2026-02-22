@@ -10,6 +10,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 
 public class ReligiousActivity extends AppCompatActivity {
@@ -17,6 +20,8 @@ public class ReligiousActivity extends AppCompatActivity {
     Spinner spReligion, spCaste, spSubCaste, spMotherTongue, spManglik;
     EditText etGotra;
     Button btnContinue;
+
+    FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +35,12 @@ public class ReligiousActivity extends AppCompatActivity {
         spManglik = findViewById(R.id.spManglik);
         etGotra = findViewById(R.id.etGotra);
         btnContinue = findViewById(R.id.btnContinue);
+
+        auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null) {
+            finish();
+            return;
+        }
 
         loadReligion();
         loadMotherTongue();
@@ -51,21 +62,15 @@ public class ReligiousActivity extends AppCompatActivity {
             }
         });
 
-        btnContinue.setOnClickListener(v -> validateAndNext());
+        btnContinue.setOnClickListener(v -> validateAndSave());
     }
+
+    // ================= LOAD SPINNERS =================
 
     private void loadReligion() {
         String[] religion = {
-                "Select",
-                "Hindu",
-                "Muslim",
-                "Jain",
-                "Sikh",
-                "Christian",
-                "Buddhist",
-                "Parsi",
-                "Jewish",
-                "Other"
+                "Select", "Hindu", "Muslim", "Jain", "Sikh",
+                "Christian", "Buddhist", "Parsi", "Jewish", "Other"
         };
 
         spReligion.setAdapter(new ArrayAdapter<>(this,
@@ -76,63 +81,24 @@ public class ReligiousActivity extends AppCompatActivity {
         ArrayList<String> caste = new ArrayList<>();
         caste.add("Select");
 
-        if (religion.equals("Hindu")) {
-            caste.add("Brahmin");
-            caste.add("Rajput");
-            caste.add("Kshatriya");
-            caste.add("Vaishya");
-            caste.add("Kayastha");
-            caste.add("Agarwal");
-            caste.add("Jat");
-            caste.add("Yadav");
-            caste.add("Kurmi");
-            caste.add("Maratha");
-            caste.add("Baniya");
-            caste.add("SC");
-            caste.add("ST");
-            caste.add("OBC");
+        if (religion.equals("Jain")) {
+            caste.add("Digambar");
+            caste.add("Shwetambar Murtipujak");
+            caste.add("Shwetambar Sthanakvasi");
+            caste.add("Shwetambar Terapanthi");
+        }
+        else if (religion.equals("Hindu")) {
+            caste.add("Brahmin"); caste.add("Rajput"); caste.add("Jat");
+            caste.add("Yadav"); caste.add("Maratha"); caste.add("Baniya");
         }
         else if (religion.equals("Muslim")) {
-            caste.add("Sunni");
-            caste.add("Shia");
-            caste.add("Bohra");
-            caste.add("Khoja");
-            caste.add("Pathan");
-            caste.add("Sheikh");
-            caste.add("Syed");
-        }
-        else if (religion.equals("Jain")) {
-            caste.add("Digambar");
-            caste.add("Shwetambar");
-            caste.add("Sthanakvasi");
-            caste.add("Terapanthi");
+            caste.add("Sunni"); caste.add("Shia"); caste.add("Bohra");
         }
         else if (religion.equals("Sikh")) {
-            caste.add("Jat Sikh");
-            caste.add("Khatri");
-            caste.add("Arora");
-            caste.add("Ramgarhia");
-            caste.add("Mazhabhi");
+            caste.add("Jat Sikh"); caste.add("Khatri");
         }
         else if (religion.equals("Christian")) {
-            caste.add("Roman Catholic");
-            caste.add("Protestant");
-            caste.add("Syrian Catholic");
-            caste.add("Syrian Orthodox");
-            caste.add("Born Again");
-        }
-        else if (religion.equals("Buddhist")) {
-            caste.add("Mahayana");
-            caste.add("Theravada");
-            caste.add("Navayana");
-        }
-        else if (religion.equals("Parsi")) {
-            caste.add("Irani");
-            caste.add("Parsi Zoroastrian");
-        }
-        else if (religion.equals("Jewish")) {
-            caste.add("Ashkenazi");
-            caste.add("Sephardi");
+            caste.add("Roman Catholic"); caste.add("Protestant");
         }
         else {
             caste.add("Other");
@@ -146,57 +112,48 @@ public class ReligiousActivity extends AppCompatActivity {
         ArrayList<String> sub = new ArrayList<>();
         sub.add("Select");
 
-        if (caste.equals("Brahmin")) {
-            sub.add("Gaur");
-            sub.add("Saraswat");
-            sub.add("Maithil");
-            sub.add("Iyer");
-            sub.add("Iyengar");
-            sub.add("Kanyakubj");
-            sub.add("Bhumihar");
+        // ================= JAIN LOGIC =================
+        if (caste.equals("Digambar")) {
+            sub.add("Agarwal");
+            sub.add("Khandelwal");
+            sub.add("Parwar");
+            sub.add("Kasliwal");
+            sub.add("Golapurab");
+            sub.add("Humad");
+        }
+        else if (caste.equals("Shwetambar Murtipujak")) {
+            sub.add("Oswal");
+            sub.add("Porwal");
+            sub.add("Shrimal");
+            sub.add("Modh");
+            sub.add("Visha Oswal");
+            sub.add("Visha Porwal");
+        }
+        else if (caste.equals("Shwetambar Sthanakvasi")) {
+            sub.add("Oswal");
+            sub.add("Humad");
+            sub.add("Charnagri");
+            sub.add("Golapurab");
+        }
+        else if (caste.equals("Shwetambar Terapanthi")) {
+            sub.add("Daga");
+            sub.add("Bothra");
+            sub.add("Dugar");
+            sub.add("Surana");
+            sub.add("Kothari");
+            sub.add("Malu");
+            sub.add("Rathi");
+        }
+
+        // ================= OTHER RELIGIONS =================
+        else if (caste.equals("Brahmin")) {
+            sub.add("Gaur"); sub.add("Maithil"); sub.add("Iyer");
         }
         else if (caste.equals("Rajput")) {
-            sub.add("Sisodia");
-            sub.add("Rathore");
-            sub.add("Chauhan");
-            sub.add("Solanki");
-            sub.add("Tomar");
-        }
-        else if (caste.equals("Jat")) {
-            sub.add("Jat Hindu");
-            sub.add("Jat Sikh");
-        }
-        else if (caste.equals("Yadav")) {
-            sub.add("Ahir");
-            sub.add("Gwala");
-        }
-        else if (caste.equals("Maratha")) {
-            sub.add("96 Kuli");
-            sub.add("Kunbi");
+            sub.add("Sisodia"); sub.add("Rathore");
         }
         else if (caste.equals("Sunni")) {
-            sub.add("Hanafi");
-            sub.add("Shafi");
-        }
-        else if (caste.equals("Shia")) {
-            sub.add("Ithna Ashari");
-            sub.add("Ismaili");
-        }
-        else if (caste.equals("Digambar")) {
-            sub.add("Agarwal Jain");
-            sub.add("Khandelwal Jain");
-        }
-        else if (caste.equals("Shwetambar")) {
-            sub.add("Murtipujak");
-            sub.add("Sthanakvasi");
-        }
-        else if (caste.equals("Roman Catholic")) {
-            sub.add("Goan Catholic");
-            sub.add("East Indian Catholic");
-        }
-        else if (caste.equals("Syrian Catholic")) {
-            sub.add("Syro Malabar");
-            sub.add("Syro Malankara");
+            sub.add("Hanafi"); sub.add("Shafi");
         }
         else {
             sub.add("Not Applicable");
@@ -208,18 +165,8 @@ public class ReligiousActivity extends AppCompatActivity {
 
     private void loadMotherTongue() {
         String[] lang = {
-                "Select",
-                "Hindi",
-                "English",
-                "Gujarati",
-                "Marathi",
-                "Punjabi",
-                "Urdu",
-                "Bengali",
-                "Tamil",
-                "Telugu",
-                "Kannada",
-                "Malayalam"
+                "Select", "Hindi", "English", "Gujarati", "Marathi",
+                "Punjabi", "Urdu", "Bengali", "Tamil", "Telugu"
         };
 
         spMotherTongue.setAdapter(new ArrayAdapter<>(this,
@@ -232,7 +179,10 @@ public class ReligiousActivity extends AppCompatActivity {
                 android.R.layout.simple_spinner_dropdown_item, manglik));
     }
 
-    private void validateAndNext() {
+    // ================= SAVE DATA =================
+
+    private void validateAndSave() {
+
         if (spReligion.getSelectedItemPosition() == 0 ||
                 spCaste.getSelectedItemPosition() == 0 ||
                 spSubCaste.getSelectedItemPosition() == 0 ||
@@ -243,7 +193,34 @@ public class ReligiousActivity extends AppCompatActivity {
             return;
         }
 
-        Intent intent = new Intent(ReligiousActivity.this, EducationDetailsActivity.class);
-        startActivity(intent);
+        String uid = auth.getCurrentUser().getUid();
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid).child("religious").child("religion")
+                .setValue(spReligion.getSelectedItem().toString());
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid).child("religious").child("caste")
+                .setValue(spCaste.getSelectedItem().toString());
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid).child("religious").child("subCaste")
+                .setValue(spSubCaste.getSelectedItem().toString());
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid).child("religious").child("motherTongue")
+                .setValue(spMotherTongue.getSelectedItem().toString());
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid).child("religious").child("manglik")
+                .setValue(spManglik.getSelectedItem().toString());
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid).child("religious").child("gotra")
+                .setValue(etGotra.getText().toString().trim());
+
+        Toast.makeText(this, "Religious Details Saved", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, EducationDetailsActivity.class));
+        finish();
     }
 }

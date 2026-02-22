@@ -29,7 +29,7 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
 
         etName = findViewById(R.id.etName);
-        etEmail = findViewById(R.id.etEmail); // ✅ new
+        etEmail = findViewById(R.id.etEmail);
         etMobile = findViewById(R.id.etMobile);
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
@@ -51,7 +51,6 @@ public class SignupActivity extends AppCompatActivity {
                 return;
             }
 
-            // ✅ email validation
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 etEmail.setError("Enter valid email");
                 return;
@@ -72,14 +71,15 @@ public class SignupActivity extends AppCompatActivity {
                 return;
             }
 
-            // ✅ REAL EMAIL used (no fake email now)
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
 
                             String userId = mAuth.getCurrentUser().getUid();
 
+                            // 👇 User object (profile incomplete)
                             User user = new User(userId, name, email, mobile, password);
+                            user.setProfileCompleted(false); // 🔴 IMPORTANT LINE
 
                             databaseReference.child(userId).setValue(user)
                                     .addOnSuccessListener(unused -> {

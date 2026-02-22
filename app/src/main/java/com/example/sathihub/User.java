@@ -8,16 +8,27 @@ public class User {
     public String mobile;
     public String password;
 
+    private boolean profileCompleted;
+
     // 🔹 Empty constructor (Firebase ke liye zaroori)
     public User() {
     }
 
-    // 🔹 New constructor with EMAIL
+    // 🔹 Constructor
     public User(String userId, String name, String email, String mobile, String password) {
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.mobile = mobile;
         this.password = password;
+        this.profileCompleted = false; // 👈 IMPORTANT (default false)
+    }
+
+    public boolean isProfileCompleted() {
+        return profileCompleted;
+    }
+
+    public void setProfileCompleted(boolean profileCompleted) {
+        this.profileCompleted = profileCompleted;
     }
 }

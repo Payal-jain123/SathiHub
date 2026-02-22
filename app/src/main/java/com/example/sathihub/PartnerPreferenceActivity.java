@@ -10,9 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.sathihub.model.PartnerPreferenceModel;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class PartnerPreferenceActivity extends AppCompatActivity {
@@ -21,7 +19,6 @@ public class PartnerPreferenceActivity extends AppCompatActivity {
     EditText etLocation;
     Button btnSubmit;
 
-    DatabaseReference reference;
     FirebaseAuth auth;
 
     @Override
@@ -39,7 +36,11 @@ public class PartnerPreferenceActivity extends AppCompatActivity {
         btnSubmit = findViewById(R.id.btnSubmit);
 
         auth = FirebaseAuth.getInstance();
-        reference = FirebaseDatabase.getInstance().getReference("users");
+
+        if (auth.getCurrentUser() == null) {
+            finish();
+            return;
+        }
 
         loadAgeRange();
         loadHeightRange();
@@ -48,38 +49,81 @@ public class PartnerPreferenceActivity extends AppCompatActivity {
         loadEducation();
         loadOccupation();
 
+        loadExistingData(); // ✅ Edit Profile ke liye
+
         btnSubmit.setOnClickListener(v -> validateAndSave());
     }
 
+    // ================= LOAD EXISTING DATA =================
+
+    private void loadExistingData() {
+        String uid = auth.getCurrentUser().getUid();
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid)
+                .child("partnerPreference")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+
+                        setSpinner(spAgeRange, snapshot.child("ageRange").getValue(String.class));
+                        setSpinner(spHeightRange, snapshot.child("heightRange").getValue(String.class));
+                        setSpinner(spReligion, snapshot.child("religion").getValue(String.class));
+                        setSpinner(spCaste, snapshot.child("caste").getValue(String.class));
+                        setSpinner(spEducation, snapshot.child("education").getValue(String.class));
+                        setSpinner(spOccupation, snapshot.child("occupation").getValue(String.class));
+
+                        etLocation.setText(snapshot.child("location").getValue(String.class));
+                    }
+                });
+    }
+
+    private void setSpinner(Spinner spinner, String value) {
+        if (value == null) return;
+        ArrayAdapter adapter = (ArrayAdapter) spinner.getAdapter();
+        int pos = adapter.getPosition(value);
+        if (pos >= 0) spinner.setSelection(pos);
+    }
+
+    // ================= LOAD SPINNERS =================
+
     private void loadAgeRange() {
         String[] data = {"Select","18 - 22","23 - 26","27 - 30","31 - 35","36 - 40","40+"};
-        spAgeRange.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, data));
+        spAgeRange.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, data));
     }
 
     private void loadHeightRange() {
         String[] data = {"Select","4'5 - 5'0","5'1 - 5'5","5'6 - 6'0","6'0+"};
-        spHeightRange.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, data));
+        spHeightRange.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, data));
     }
 
     private void loadReligion() {
         String[] data = {"Select","Hindu","Muslim","Christian","Sikh","Jain","Buddhist","Other"};
-        spReligion.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, data));
+        spReligion.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, data));
     }
 
     private void loadCaste() {
         String[] data = {"Select","General","OBC","SC","ST","Other"};
-        spCaste.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, data));
+        spCaste.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, data));
     }
 
     private void loadEducation() {
         String[] data = {"Select","10th","12th","Diploma","Graduate","Post Graduate","Doctor","Engineer","CA","MBA","PhD","Other"};
-        spEducation.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, data));
+        spEducation.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, data));
     }
 
     private void loadOccupation() {
         String[] data = {"Select","Software Engineer","Doctor","Teacher","Business","Government Job","Private Job","Farmer","Self Employed","Housewife","Other"};
-        spOccupation.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, data));
+        spOccupation.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, data));
     }
+
+    // ================= SAVE DATA =================
 
     private void validateAndSave() {
 
@@ -95,24 +139,48 @@ public class PartnerPreferenceActivity extends AppCompatActivity {
             return;
         }
 
-        if(auth.getCurrentUser() == null){
-            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         String uid = auth.getCurrentUser().getUid();
 
-        PartnerPreferenceModel model = new PartnerPreferenceModel(
-                spAgeRange.getSelectedItem().toString(),
-                spHeightRange.getSelectedItem().toString(),
-                spReligion.getSelectedItem().toString(),
-                spCaste.getSelectedItem().toString(),
-                etLocation.getText().toString(),
-                spEducation.getSelectedItem().toString(),
-                spOccupation.getSelectedItem().toString()
-        );
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid)
+                .child("partnerPreference")
+                .child("ageRange").setValue(spAgeRange.getSelectedItem().toString());
 
-        reference.child(uid).child("partnerPreference").setValue(model);
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid)
+                .child("partnerPreference")
+                .child("heightRange").setValue(spHeightRange.getSelectedItem().toString());
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid)
+                .child("partnerPreference")
+                .child("religion").setValue(spReligion.getSelectedItem().toString());
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid)
+                .child("partnerPreference")
+                .child("caste").setValue(spCaste.getSelectedItem().toString());
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid)
+                .child("partnerPreference")
+                .child("education").setValue(spEducation.getSelectedItem().toString());
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid)
+                .child("partnerPreference")
+                .child("occupation").setValue(spOccupation.getSelectedItem().toString());
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid)
+                .child("partnerPreference")
+                .child("location").setValue(etLocation.getText().toString().trim());
+
+        // ✅ PROFILE COMPLETED FLAG
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid)
+                .child("profileCompleted")
+                .setValue(true);
 
         Toast.makeText(this, "Partner Preference Saved", Toast.LENGTH_SHORT).show();
 

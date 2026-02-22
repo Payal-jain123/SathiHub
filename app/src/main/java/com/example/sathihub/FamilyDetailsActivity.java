@@ -12,16 +12,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sathihub.model.FamilyModel;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class FamilyDetailsActivity extends AppCompatActivity {
 
-    EditText etFatherOccupation, etMotherOccupation, etFamilyCity;
+    EditText etFatherOccupation, etMotherOccupation, etFamilyState; // 🔥 city → state
     Spinner spFamilyType, spBrothers, spSisters, spFamilyIncome, spFamilyStatus;
     Button btnNext;
 
-    DatabaseReference reference;
     FirebaseAuth auth;
 
     @Override
@@ -31,7 +29,7 @@ public class FamilyDetailsActivity extends AppCompatActivity {
 
         etFatherOccupation = findViewById(R.id.etFatherOccupation);
         etMotherOccupation = findViewById(R.id.etMotherOccupation);
-        etFamilyCity = findViewById(R.id.etFamilyCity);
+        etFamilyState = findViewById(R.id.etFamilyCity); // XML id same hai, but logically STATE
 
         spFamilyType = findViewById(R.id.spFamilyType);
         spBrothers = findViewById(R.id.spBrothers);
@@ -42,7 +40,12 @@ public class FamilyDetailsActivity extends AppCompatActivity {
         btnNext = findViewById(R.id.btnNext);
 
         auth = FirebaseAuth.getInstance();
-        reference = FirebaseDatabase.getInstance().getReference("users");
+
+        if (auth.getCurrentUser() == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         loadFamilyType();
         loadBrothers();
@@ -50,7 +53,38 @@ public class FamilyDetailsActivity extends AppCompatActivity {
         loadFamilyIncome();
         loadFamilyStatus();
 
+        loadExistingData(); // ✅ for Edit Profile
+
         btnNext.setOnClickListener(v -> validateAndNext());
+    }
+
+    private void loadExistingData() {
+        String uid = auth.getCurrentUser().getUid();
+
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid)
+                .child("family")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        etFatherOccupation.setText(snapshot.child("fatherOccupation").getValue(String.class));
+                        etMotherOccupation.setText(snapshot.child("motherOccupation").getValue(String.class));
+                        etFamilyState.setText(snapshot.child("familyState").getValue(String.class)); // 🔥 state
+
+                        setSpinner(spFamilyType, snapshot.child("familyType").getValue(String.class));
+                        setSpinner(spBrothers, snapshot.child("brothers").getValue(String.class));
+                        setSpinner(spSisters, snapshot.child("sisters").getValue(String.class));
+                        setSpinner(spFamilyIncome, snapshot.child("familyIncome").getValue(String.class));
+                        setSpinner(spFamilyStatus, snapshot.child("familyStatus").getValue(String.class));
+                    }
+                });
+    }
+
+    private void setSpinner(Spinner spinner, String value) {
+        if (value == null) return;
+        ArrayAdapter adapter = (ArrayAdapter) spinner.getAdapter();
+        int pos = adapter.getPosition(value);
+        if (pos >= 0) spinner.setSelection(pos);
     }
 
     private void loadFamilyType() {
@@ -101,7 +135,7 @@ public class FamilyDetailsActivity extends AppCompatActivity {
 
         if (etFatherOccupation.getText().toString().trim().isEmpty() ||
                 etMotherOccupation.getText().toString().trim().isEmpty() ||
-                etFamilyCity.getText().toString().trim().isEmpty() ||
+                etFamilyState.getText().toString().trim().isEmpty() ||
                 spFamilyType.getSelectedItemPosition() == 0 ||
                 spBrothers.getSelectedItemPosition() == 0 ||
                 spSisters.getSelectedItemPosition() == 0 ||
@@ -115,21 +149,24 @@ public class FamilyDetailsActivity extends AppCompatActivity {
         String uid = auth.getCurrentUser().getUid();
 
         FamilyModel model = new FamilyModel(
-                etFatherOccupation.getText().toString(),
-                etMotherOccupation.getText().toString(),
+                etFatherOccupation.getText().toString().trim(),
+                etMotherOccupation.getText().toString().trim(),
                 spFamilyType.getSelectedItem().toString(),
                 spBrothers.getSelectedItem().toString(),
                 spSisters.getSelectedItem().toString(),
                 spFamilyIncome.getSelectedItem().toString(),
-                etFamilyCity.getText().toString(),
+                etFamilyState.getText().toString().trim(), // 🔥 state
                 spFamilyStatus.getSelectedItem().toString()
         );
 
-        reference.child(uid).child("family").setValue(model);
+        FirebaseDatabase.getInstance().getReference("Users")
+                .child(uid)
+                .child("family")
+                .setValue(model);
 
         Toast.makeText(this, "Family Details Saved", Toast.LENGTH_SHORT).show();
 
-        startActivity(new Intent(FamilyDetailsActivity.this, PartnerPreferenceActivity.class));
+        startActivity(new Intent(this, PartnerPreferenceActivity.class));
         finish();
     }
 }
