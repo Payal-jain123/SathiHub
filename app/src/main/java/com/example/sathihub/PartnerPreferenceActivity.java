@@ -10,7 +10,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class PartnerPreferenceActivity extends AppCompatActivity {
@@ -140,53 +142,35 @@ public class PartnerPreferenceActivity extends AppCompatActivity {
         }
 
         String uid = auth.getCurrentUser().getUid();
+        DatabaseReference partnerRef = FirebaseDatabase.getInstance().getReference("Users").child(uid).child("partnerPreference");
+        DatabaseReference personalRef = FirebaseDatabase.getInstance().getReference("PersonalInfo").child(uid);
 
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid)
-                .child("partnerPreference")
-                .child("ageRange").setValue(spAgeRange.getSelectedItem().toString());
+        String ageRange = spAgeRange.getSelectedItem().toString();
+        String heightRange = spHeightRange.getSelectedItem().toString();
+        String religion = spReligion.getSelectedItem().toString();
+        String caste = spCaste.getSelectedItem().toString();
+        String education = spEducation.getSelectedItem().toString();
+        String occupation = spOccupation.getSelectedItem().toString();
+        String location = etLocation.getText().toString().trim();
 
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid)
-                .child("partnerPreference")
-                .child("heightRange").setValue(spHeightRange.getSelectedItem().toString());
-
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid)
-                .child("partnerPreference")
-                .child("religion").setValue(spReligion.getSelectedItem().toString());
-
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid)
-                .child("partnerPreference")
-                .child("caste").setValue(spCaste.getSelectedItem().toString());
-
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid)
-                .child("partnerPreference")
-                .child("education").setValue(spEducation.getSelectedItem().toString());
-
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid)
-                .child("partnerPreference")
-                .child("occupation").setValue(spOccupation.getSelectedItem().toString());
-
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid)
-                .child("partnerPreference")
-                .child("location").setValue(etLocation.getText().toString().trim());
-
-        // ✅ PROFILE COMPLETED FLAG
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid)
-                .child("profileCompleted")
-                .setValue(true);
-
-        Toast.makeText(this, "Partner Preference Saved", Toast.LENGTH_SHORT).show();
-
-        Intent i = new Intent(PartnerPreferenceActivity.this, UploadPhotoActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(i);
-        finish();
+        Tasks.whenAllSuccess(
+            partnerRef.child("ageRange").setValue(ageRange),
+            partnerRef.child("heightRange").setValue(heightRange),
+            partnerRef.child("religion").setValue(religion),
+            partnerRef.child("caste").setValue(caste),
+            partnerRef.child("education").setValue(education),
+            partnerRef.child("occupation").setValue(occupation),
+            partnerRef.child("location").setValue(location),
+            personalRef.child("partnerAge").setValue(ageRange),
+            personalRef.child("partnerReligion").setValue(religion),
+            FirebaseDatabase.getInstance().getReference("Users").child(uid).child("profileCompleted").setValue(true)
+        ).addOnSuccessListener(results -> {
+            Toast.makeText(this, "Partner Preference Saved", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(PartnerPreferenceActivity.this, UploadPhotoActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            finish();
+        }).addOnFailureListener(e ->
+            Toast.makeText(this, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }

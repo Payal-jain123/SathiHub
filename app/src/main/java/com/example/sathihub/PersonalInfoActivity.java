@@ -148,14 +148,21 @@ public class PersonalInfoActivity extends AppCompatActivity {
                 .setValue(new PersonalModel(
                         name, gender, dob, String.valueOf(age),
                         height, weight, bloodGroup, maritalStatus, disability
-                ));
-
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid)
-                .child("name").setValue(name);
-
-        Toast.makeText(this, "Personal Info Saved", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, ReligiousActivity.class));
+                ))
+                .addOnSuccessListener(unused -> {
+                    FirebaseDatabase.getInstance().getReference("Users")
+                            .child(uid)
+                            .child("name").setValue(name)
+                            .addOnSuccessListener(unused2 -> {
+                                Toast.makeText(this, "Personal Info Saved", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(this, ReligiousActivity.class));
+                                finish();
+                            })
+                            .addOnFailureListener(e ->
+                                    Toast.makeText(this, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private int calculateAge(String dob) {

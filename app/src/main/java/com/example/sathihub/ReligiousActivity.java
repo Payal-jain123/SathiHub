@@ -10,8 +10,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 
@@ -194,33 +196,30 @@ public class ReligiousActivity extends AppCompatActivity {
         }
 
         String uid = auth.getCurrentUser().getUid();
+        DatabaseReference userReligiousRef = FirebaseDatabase.getInstance().getReference("Users").child(uid).child("religious");
+        DatabaseReference personalRef = FirebaseDatabase.getInstance().getReference("PersonalInfo").child(uid);
 
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid).child("religious").child("religion")
-                .setValue(spReligion.getSelectedItem().toString());
+        String religion = spReligion.getSelectedItem().toString();
+        String caste = spCaste.getSelectedItem().toString();
+        String subCaste = spSubCaste.getSelectedItem().toString();
+        String motherTongue = spMotherTongue.getSelectedItem().toString();
+        String manglik = spManglik.getSelectedItem().toString();
+        String gotra = etGotra.getText().toString().trim();
 
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid).child("religious").child("caste")
-                .setValue(spCaste.getSelectedItem().toString());
-
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid).child("religious").child("subCaste")
-                .setValue(spSubCaste.getSelectedItem().toString());
-
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid).child("religious").child("motherTongue")
-                .setValue(spMotherTongue.getSelectedItem().toString());
-
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid).child("religious").child("manglik")
-                .setValue(spManglik.getSelectedItem().toString());
-
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid).child("religious").child("gotra")
-                .setValue(etGotra.getText().toString().trim());
-
-        Toast.makeText(this, "Religious Details Saved", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, EducationDetailsActivity.class));
-        finish();
+        Tasks.whenAllSuccess(
+            userReligiousRef.child("religion").setValue(religion),
+            userReligiousRef.child("caste").setValue(caste),
+            userReligiousRef.child("subCaste").setValue(subCaste),
+            userReligiousRef.child("motherTongue").setValue(motherTongue),
+            userReligiousRef.child("manglik").setValue(manglik),
+            userReligiousRef.child("gotra").setValue(gotra),
+            personalRef.child("religion").setValue(religion),
+            personalRef.child("caste").setValue(caste)
+        ).addOnSuccessListener(results -> {
+            Toast.makeText(this, "Religious Details Saved", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, EducationDetailsActivity.class));
+            finish();
+        }).addOnFailureListener(e ->
+            Toast.makeText(this, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }

@@ -1,10 +1,248 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HelpSupportActivity">
+    android:orientation="vertical"
+    android:background="@drawable/bg_gradient">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- HEADER BAR -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#C2185B"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:layout_marginEnd="12dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Help and Support"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- FAQ CARD -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_bg"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Frequently Asked Questions"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#C2185B"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Q: How do I find matches?"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="A: Go to the Matches tab to see AI-recommended profiles based on your preferences. You can also use the Search tab to find specific profiles."
+                    android:textSize="14sp"
+                    android:textColor="#555555"
+                    android:layout_marginBottom="10dp"/>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0" android:layout_marginVertical="6dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Q: Is my data safe?"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="A: Yes, all your data is encrypted and stored securely. We never share your personal information without consent."
+                    android:textSize="14sp"
+                    android:textColor="#555555"
+                    android:layout_marginBottom="10dp"/>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0" android:layout_marginVertical="6dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Q: How do I update my profile?"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="A: Go to Profile and tap 'Edit Profile' to update your details, photos, and preferences."
+                    android:textSize="14sp"
+                    android:textColor="#555555"
+                    android:layout_marginBottom="10dp"/>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0" android:layout_marginVertical="6dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Q: Can I delete my account?"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="A: Yes, you can delete your account permanently from Account Settings. All your data will be removed from our servers."
+                    android:textSize="14sp"
+                    android:textColor="#555555"/>
+
+            </LinearLayout>
+
+            <!-- CONTACT SUPPORT CARD -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_bg"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Contact Support"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#C2185B"
+                    android:layout_marginBottom="12dp"/>
+
+                <Button
+                    android:id="@+id/btnEmailSupport"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="Email Support"
+                    android:backgroundTint="#C2185B"
+                    android:textColor="#FFFFFF"/>
+
+                <Button
+                    android:id="@+id/btnCallSupport"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="Call Support"
+                    android:backgroundTint="#4CAF50"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginTop="10dp"/>
+
+            </LinearLayout>
+
+            <!-- REPORT PROBLEM CARD -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_bg"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Report a Problem"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#C2185B"
+                    android:layout_marginBottom="8dp"/>
+
+                <EditText
+                    android:id="@+id/etProblem"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:hint="Describe your issue here..."
+                    android:textColor="#333333"
+                    android:textColorHint="#999999"
+                    android:background="@android:drawable/edit_text"
+                    android:padding="10dp"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"/>
+
+                <Button
+                    android:id="@+id/btnSubmitReport"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="Submit Report"
+                    android:backgroundTint="#FF9800"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginTop="10dp"/>
+
+            </LinearLayout>
+
+            <!-- APP INFO CARD -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_bg"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="App Information"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#C2185B"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SathiHub v1.0.0"
+                    android:textSize="14sp"
+                    android:textColor="#444444"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Built with love for finding life partners"
+                    android:textSize="14sp"
+                    android:textColor="#666666"
+                    android:layout_marginTop="4dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

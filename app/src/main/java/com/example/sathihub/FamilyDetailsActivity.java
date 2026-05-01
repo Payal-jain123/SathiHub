@@ -11,7 +11,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sathihub.model.FamilyModel;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class FamilyDetailsActivity extends AppCompatActivity {
@@ -155,18 +157,28 @@ public class FamilyDetailsActivity extends AppCompatActivity {
                 spBrothers.getSelectedItem().toString(),
                 spSisters.getSelectedItem().toString(),
                 spFamilyIncome.getSelectedItem().toString(),
-                etFamilyState.getText().toString().trim(), // 🔥 state
+                etFamilyState.getText().toString().trim(),
                 spFamilyStatus.getSelectedItem().toString()
         );
+
+        DatabaseReference personalRef = FirebaseDatabase.getInstance().getReference("PersonalInfo").child(uid);
 
         FirebaseDatabase.getInstance().getReference("Users")
                 .child(uid)
                 .child("family")
-                .setValue(model);
-
-        Toast.makeText(this, "Family Details Saved", Toast.LENGTH_SHORT).show();
-
-        startActivity(new Intent(this, PartnerPreferenceActivity.class));
-        finish();
+                .setValue(model)
+                .addOnSuccessListener(unused -> {
+                    Tasks.whenAllSuccess(
+                        personalRef.child("fatherOccupation").setValue(etFatherOccupation.getText().toString().trim()),
+                        personalRef.child("motherOccupation").setValue(etMotherOccupation.getText().toString().trim())
+                    ).addOnSuccessListener(results2 -> {
+                        Toast.makeText(this, "Family Details Saved", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(this, PartnerPreferenceActivity.class));
+                        finish();
+                    }).addOnFailureListener(e ->
+                        Toast.makeText(this, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                })
+                .addOnFailureListener(e ->
+                    Toast.makeText(this, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }

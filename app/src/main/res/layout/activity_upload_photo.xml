@@ -38,7 +38,7 @@
             android:text="Select Profile Photo"
             android:layout_marginBottom="10dp"/>
 
-        <!-- 👇 Resume status text -->
+        <!-- Resume status text -->
         <TextView
             android:id="@+id/tvResumeStatus"
             android:layout_width="match_parent"
@@ -64,6 +64,46 @@
             android:hint="Write something about yourself"
             android:minLines="3"
             android:gravity="top"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Verification Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#C2185B"
+            android:layout_marginVertical="12dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Profile Verification (Optional but Recommended)"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#C2185B"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Upload any Government ID (Aadhar, PAN, Passport, Driving License) to get a Verified Badge. This builds trust with other users."
+            android:textSize="13sp"
+            android:textColor="#666666"
+            android:layout_marginBottom="12dp"/>
+
+        <TextView
+            android:id="@+id/tvDocStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No verification document selected"
+            android:textColor="#444444"
+            android:textStyle="italic"
+            android:layout_marginBottom="8dp"/>
+
+        <Button
+            android:id="@+id/btnSelectDoc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Upload ID Document (PDF/JPG/PNG)"
             android:layout_marginBottom="20dp"/>
 
         <!-- Finish Button -->

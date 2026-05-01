@@ -1,10 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MatchesActivity">
+    android:orientation="vertical"
+    android:background="@drawable/bg_gradient">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Header -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#C2185B"
+        android:text="AI Matches"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:textStyle="bold"/>
+
+    <!-- Filter Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <Spinner
+            android:id="@+id/spFilterReligion"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@android:drawable/btn_dropdown"
+            android:padding="4dp"/>
+
+        <Spinner
+            android:id="@+id/spFilterMinScore"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:background="@android:drawable/btn_dropdown"
+            android:padding="4dp"/>
+    </LinearLayout>
+
+    <!-- Result count -->
+    <TextView
+        android:id="@+id/tvResultCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="0 matches found"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:paddingHorizontal="12dp"
+        android:paddingBottom="4dp"/>
+
+    <!-- Progress -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <!-- Empty State -->
+    <TextView
+        android:id="@+id/tvEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No matches found. Update your partner preferences to get AI recommendations."
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:padding="24dp"
+        android:visibility="gone"/>
+
+    <!-- Matches List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerMatches"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:clipToPadding="false"/>
+
+</LinearLayout>

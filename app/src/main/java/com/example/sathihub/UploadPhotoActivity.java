@@ -12,7 +12,9 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONObject;
@@ -31,11 +33,11 @@ import okhttp3.Response;
 public class UploadPhotoActivity extends AppCompatActivity {
 
     ImageView imgProfile;
-    Button btnSelectImage, btnSelectResume, btnFinish;
+    Button btnSelectImage, btnSelectResume, btnSelectDoc, btnFinish;
     EditText etAbout;
-    TextView tvResumeStatus;
+    TextView tvResumeStatus, tvDocStatus;
 
-    Uri imageUri, resumeUri;
+    Uri imageUri, resumeUri, docUri;
     FirebaseAuth auth;
 
     // 🔴 CHECK THESE IN CLOUDINARY DASHBOARD
@@ -50,14 +52,17 @@ public class UploadPhotoActivity extends AppCompatActivity {
         imgProfile = findViewById(R.id.imgProfile);
         btnSelectImage = findViewById(R.id.btnSelectImage);
         btnSelectResume = findViewById(R.id.btnSelectResume);
+        btnSelectDoc = findViewById(R.id.btnSelectDoc);
         btnFinish = findViewById(R.id.btnFinish);
         etAbout = findViewById(R.id.etAbout);
         tvResumeStatus = findViewById(R.id.tvResumeStatus);
+        tvDocStatus = findViewById(R.id.tvDocStatus);
 
         auth = FirebaseAuth.getInstance();
 
         btnSelectImage.setOnClickListener(v -> selectImage());
         btnSelectResume.setOnClickListener(v -> selectResume());
+        btnSelectDoc.setOnClickListener(v -> selectDoc());
         btnFinish.setOnClickListener(v -> uploadData());
     }
 
@@ -71,6 +76,14 @@ public class UploadPhotoActivity extends AppCompatActivity {
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.setType("application/pdf");
         startActivityForResult(i, 2);
+    }
+
+    private void selectDoc() {
+        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+        i.setType("*/*");
+        String[] mimeTypes = {"application/pdf", "image/*"};
+        i.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        startActivityForResult(i, 3);
     }
 
     @Override
@@ -89,6 +102,13 @@ public class UploadPhotoActivity extends AppCompatActivity {
                 String fileName = resumeUri.getLastPathSegment();
                 tvResumeStatus.setText("Selected: " + fileName);
                 Toast.makeText(this, "Resume Selected", Toast.LENGTH_SHORT).show();
+            }
+
+            if (requestCode == 3) {
+                docUri = data.getData();
+                String fileName = docUri.getLastPathSegment();
+                tvDocStatus.setText("Selected: " + fileName);
+                Toast.makeText(this, "Verification Document Selected", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -109,35 +129,54 @@ public class UploadPhotoActivity extends AppCompatActivity {
             uploadToCloudinary(resumeUri, "raw", resumeUrl -> {
 
                 String uid = auth.getCurrentUser().getUid();
+                DatabaseReference profileImageRef = FirebaseDatabase.getInstance().getReference("ProfileImage").child(uid);
+                DatabaseReference personalRef = FirebaseDatabase.getInstance().getReference("PersonalInfo").child(uid);
+                DatabaseReference verificationRef = FirebaseDatabase.getInstance().getReference("Verification").child(uid);
+                String about = etAbout.getText().toString();
 
-                FirebaseDatabase.getInstance().getReference("ProfileImage")
-                        .child(uid)
-                        .child("imageUrl")
-                        .setValue(imageUrl);
+                // Build list of tasks
+                java.util.List<com.google.android.gms.tasks.Task<?>> tasks = new java.util.ArrayList<>();
+                tasks.add(profileImageRef.child("imageUrl").setValue(imageUrl));
+                tasks.add(profileImageRef.child("resumeUrl").setValue(resumeUrl));
+                tasks.add(profileImageRef.child("aboutMe").setValue(about));
+                tasks.add(personalRef.child("about").setValue(about));
+                tasks.add(personalRef.child("imageUrl").setValue(imageUrl));
+                tasks.add(FirebaseDatabase.getInstance().getReference("Users").child(uid).child("profileCompleted").setValue(true));
 
-                FirebaseDatabase.getInstance().getReference("ProfileImage")
-                        .child(uid)
-                        .child("resumeUrl")
-                        .setValue(resumeUrl);
+                // If verification doc selected, upload it too
+                if (docUri != null) {
+                    uploadToCloudinary(docUri, "raw", docUrl -> {
+                        tasks.add(verificationRef.child("docUrl").setValue(docUrl));
+                        tasks.add(verificationRef.child("status").setValue("pending"));
+                        tasks.add(verificationRef.child("submittedAt").setValue(System.currentTimeMillis()));
+                        tasks.add(personalRef.child("verificationStatus").setValue("pending"));
+                        tasks.add(FirebaseDatabase.getInstance().getReference("Users").child(uid).child("verificationStatus").setValue("pending"));
 
-                FirebaseDatabase.getInstance().getReference("ProfileImage")
-                        .child(uid)
-                        .child("aboutMe")
-                        .setValue(etAbout.getText().toString());
+                        Tasks.whenAllSuccess(tasks).addOnSuccessListener(results -> {
+                            Toast.makeText(this, "Profile Completed. Verification under review.", Toast.LENGTH_SHORT).show();
+                            navigateToMain();
+                        }).addOnFailureListener(e ->
+                            Toast.makeText(this, "Failed to save profile: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                    });
+                } else {
+                    tasks.add(personalRef.child("verificationStatus").setValue("none"));
+                    tasks.add(FirebaseDatabase.getInstance().getReference("Users").child(uid).child("verificationStatus").setValue("none"));
 
-                FirebaseDatabase.getInstance().getReference("Users")
-                        .child(uid)
-                        .child("profileCompleted")
-                        .setValue(true);
-
-                Toast.makeText(this, "Profile Completed", Toast.LENGTH_SHORT).show();
-
-                Intent i = new Intent(UploadPhotoActivity.this, MainActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(i);
-                finish();
+                    Tasks.whenAllSuccess(tasks).addOnSuccessListener(results -> {
+                        Toast.makeText(this, "Profile Completed", Toast.LENGTH_SHORT).show();
+                        navigateToMain();
+                    }).addOnFailureListener(e ->
+                        Toast.makeText(this, "Failed to save profile: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                }
             });
         });
+    }
+
+    private void navigateToMain() {
+        Intent i = new Intent(UploadPhotoActivity.this, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
+        finish();
     }
 
     private void uploadToCloudinary(Uri fileUri, String resourceType, CloudinaryCallback callback) {

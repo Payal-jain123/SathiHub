@@ -32,6 +32,96 @@
             android:textColor="@android:color/white"
             android:layout_marginTop="12dp"/>
 
+        <!-- VERIFICATION BADGE -->
+        <TextView
+            android:id="@+id/tvVerifiedBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Not Verified"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="#9E9E9E"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="3dp"
+            android:layout_marginTop="6dp"
+            android:visibility="gone"/>
+
+        <!-- TRUST SCORE BAR -->
+        <LinearLayout
+            android:id="@+id/layoutTrustScore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvTrustLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trust Score"
+                android:textSize="13sp"
+                android:textColor="#FFFFFF"
+                android:layout_gravity="center"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp"
+                android:background="#33FFFFFF"
+                android:layout_marginHorizontal="40dp">
+
+                <View
+                    android:id="@+id/trustBar"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:background="#4CAF50"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvTrustScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0/100"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:layout_gravity="center"
+                android:layout_marginTop="2dp"/>
+        </LinearLayout>
+
+        <!-- COMPATIBILITY % (for other profiles) -->
+        <LinearLayout
+            android:id="@+id/layoutCompatibility"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvCompatLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Compatibility"
+                android:textSize="13sp"
+                android:textColor="#FFFFFF"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/tvCompatPercent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0%"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
         <!-- AGE | HEIGHT | CITY -->
         <TextView
             android:id="@+id/tvInfo"
@@ -40,9 +130,9 @@
             android:text="Age | Height | City"
             android:textSize="15sp"
             android:textColor="@android:color/white"
-            android:layout_marginTop="4dp"/>
+            android:layout_marginTop="10dp"/>
 
-        <!-- ABOUT ME (PROFILE KE JUST NEECH) -->
+        <!-- ABOUT ME -->
         <TextView
             android:id="@+id/tvAbout"
             android:layout_width="match_parent"
@@ -65,7 +155,7 @@
             android:layout_marginTop="10dp"
             android:padding="10dp"/>
 
-        <!-- EDIT BUTTON -->
+        <!-- ACTION BUTTON (Edit for own, Connect/Chat for others) -->
         <Button
             android:id="@+id/btnEditProfile"
             android:layout_width="match_parent"
@@ -75,6 +165,16 @@
             android:backgroundTint="#C2185B"
             android:layout_marginTop="20dp"/>
 
+        <Button
+            android:id="@+id/btnAction"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Connect"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#C2185B"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"/>
+
         <!-- DIVIDER -->
         <View
             android:layout_width="match_parent"
@@ -83,50 +183,57 @@
             android:layout_marginTop="30dp"/>
 
         <!-- SETTINGS -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Settings"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="20dp"/>
-
-        <TextView
-            android:id="@+id/btnAccount"
+        <LinearLayout
+            android:id="@+id/layoutSettings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="🔐 Account Settings"
-            android:textSize="16sp"
-            android:textColor="@android:color/white"
-            android:padding="12dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground"/>
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/btnPrivacy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="🔒 Privacy and Security"
-            android:textSize="16sp"
-            android:textColor="@android:color/white"
-            android:padding="12dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Settings"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="20dp"/>
 
-        <TextView
-            android:id="@+id/btnHelp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="❓ Help and Support"
-            android:textSize="16sp"
-            android:textColor="@android:color/white"
-            android:padding="12dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground"/>
+            <TextView
+                android:id="@+id/btnAccount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Account Settings"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:padding="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"/>
+
+            <TextView
+                android:id="@+id/btnPrivacy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Privacy and Security"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:padding="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"/>
+
+            <TextView
+                android:id="@+id/btnHelp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Help and Support"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:padding="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"/>
+        </LinearLayout>
 
         <!-- LOGOUT -->
         <Button

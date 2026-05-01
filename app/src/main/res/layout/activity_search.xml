@@ -3,8 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFF0F5">
+    android:background="@drawable/bg_gradient">
 
+    <!-- Header -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="56dp"
@@ -15,46 +16,137 @@
         android:gravity="center"
         android:textStyle="bold"/>
 
+    <!-- Filters in a scrollable row -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/spGender"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:background="@android:drawable/btn_dropdown"
+                android:padding="4dp"/>
+
+            <Spinner
+                android:id="@+id/spReligion"
+                android:layout_width="130dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:background="@android:drawable/btn_dropdown"
+                android:padding="4dp"/>
+
+            <Spinner
+                android:id="@+id/spEducation"
+                android:layout_width="140dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:background="@android:drawable/btn_dropdown"
+                android:padding="4dp"/>
+        </LinearLayout>
+    </HorizontalScrollView>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:orientation="horizontal"
+        android:paddingHorizontal="10dp"
+        android:paddingBottom="8dp">
 
-        <!-- FILTER TYPE -->
-        <Spinner
-            android:id="@+id/spFilterType"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <!-- FILTER VALUE -->
         <EditText
-            android:id="@+id/edtFilterValue"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter value"
-            android:layout_marginTop="6dp"/>
+            android:id="@+id/edtCity"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:background="@drawable/card_bg"
+            android:hint="Search by city"
+            android:textColor="#000000"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="14sp"/>
 
-        <!-- GENDER -->
         <Spinner
-            android:id="@+id/spGender"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"/>
+            android:id="@+id/spMaritalStatus"
+            android:layout_width="130dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="8dp"
+            android:background="@android:drawable/btn_dropdown"
+            android:padding="4dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="10dp"
+        android:paddingBottom="8dp">
 
         <Button
             android:id="@+id/btnSearch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
             android:text="Search"
             android:background="#C2185B"
             android:textColor="#FFFFFF"
-            android:layout_marginTop="8dp"/>
+            android:textSize="14sp"/>
+
+        <Button
+            android:id="@+id/btnClear"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Clear"
+            android:background="#888888"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"/>
     </LinearLayout>
 
+    <!-- Result count -->
+    <TextView
+        android:id="@+id/tvResultCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="0 profiles found"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:paddingHorizontal="12dp"
+        android:paddingBottom="4dp"/>
+
+    <!-- Loading -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <!-- Empty State -->
+    <TextView
+        android:id="@+id/tvEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No profiles found. Try changing your filters."
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:padding="24dp"
+        android:visibility="gone"/>
+
+    <!-- Results List -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerProfiles"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:clipToPadding="false"/>
 </LinearLayout>

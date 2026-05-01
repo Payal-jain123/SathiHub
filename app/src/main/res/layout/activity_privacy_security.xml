@@ -1,10 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PrivacySecurityActivity">
+    android:orientation="vertical"
+    android:background="@drawable/bg_gradient">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- HEADER BAR -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#C2185B"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:layout_marginEnd="12dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Privacy and Security"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- PRIVACY POLICY CARD -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_bg"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Privacy Policy"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#C2185B"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="At SathiHub, we value your privacy. We collect only the information necessary to help you find a suitable life partner. Your personal data including contact details, photos, and preferences are stored securely and are never shared with third parties without your consent."
+                    android:textSize="14sp"
+                    android:textColor="#444444"
+                    android:lineSpacingMultiplier="1.2"/>
+
+            </LinearLayout>
+
+            <!-- DATA USAGE CARD -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_bg"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="How We Use Your Data"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#C2185B"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="&#8226; Profile information is used for matchmaking and search\n&#8226; Photos are displayed to potential matches\n&#8226; Contact details are shared only after mutual interest\n&#8226; We use aggregated data to improve our matching algorithm\n&#8226; Your data is encrypted and stored on secure servers"
+                    android:textSize="14sp"
+                    android:textColor="#444444"
+                    android:lineSpacingMultiplier="1.3"/>
+
+            </LinearLayout>
+
+            <!-- SECURITY TIPS CARD -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_bg"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Security Tips"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#C2185B"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="&#8226; Never share financial information with matches\n&#8226; Meet in public places for initial meetings\n&#8226; Report suspicious behavior immediately\n&#8226; Use a strong, unique password\n&#8226; Do not share your login credentials with anyone"
+                    android:textSize="14sp"
+                    android:textColor="#444444"
+                    android:lineSpacingMultiplier="1.3"/>
+
+            </LinearLayout>
+
+            <!-- TERMS CARD -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_bg"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Terms of Service"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#C2185B"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="By using SathiHub, you agree to provide accurate information, treat other members with respect, and not engage in harassment or fraudulent activities. We reserve the right to suspend accounts that violate these terms. Users must be 18 years or older to use this service."
+                    android:textSize="14sp"
+                    android:textColor="#444444"
+                    android:lineSpacingMultiplier="1.2"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

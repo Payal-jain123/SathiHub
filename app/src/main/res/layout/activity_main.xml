@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/bg_gradient">
 
-    <!-- 🔝 TOP BAR -->
+    <!-- TOP BAR -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
@@ -30,13 +31,31 @@
             android:textSize="18sp"
             android:textStyle="bold"/>
 
-        <ImageView
-            android:id="@+id/btnNotification"
-            android:layout_width="26dp"
-            android:layout_height="26dp"
-            android:src="@drawable/ic_notification"
-            app:tint="@android:color/white"
-            android:layout_marginEnd="12dp"/>
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp">
+
+            <ImageView
+                android:id="@+id/btnNotification"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:src="@drawable/ic_notification"
+                app:tint="@android:color/white"/>
+
+            <TextView
+                android:id="@+id/tvNotifBadge"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="top|end"
+                android:background="@drawable/badge_circle"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="#FFFFFF"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:visibility="gone"/>
+        </FrameLayout>
 
         <ImageView
             android:id="@+id/btnTopProfile"
@@ -46,25 +65,336 @@
             android:src="@drawable/ic_profile"/>
     </LinearLayout>
 
-    <!-- 🧠 CENTER CONTENT -->
-    <LinearLayout
+    <!-- MAIN SCROLLABLE CONTENT -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:background="#FFF0F5">
+        android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/txtCenter"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Welcome to get your Partner Here ❤️"
-            android:textSize="22sp"
-            android:textStyle="bold"/>
-    </LinearLayout>
+            android:orientation="vertical"
+            android:padding="12dp">
 
-    <!-- ⬇️ BOTTOM NAV BAR -->
+            <!-- WELCOME CARD -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/card_bg"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Welcome back,"
+                        android:textSize="14sp"
+                        android:textColor="#888888"/>
+
+                    <TextView
+                        android:id="@+id/tvUserName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="User"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="#C2185B"/>
+
+                    <TextView
+                        android:id="@+id/tvProfileStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Profile Complete"
+                        android:textSize="12sp"
+                        android:textColor="#4CAF50"
+                        android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/imgProfilePic"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_profile"
+                    android:background="@drawable/circle_bg"/>
+            </LinearLayout>
+
+            <!-- STATS ROW -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="@drawable/card_bg"
+                    android:gravity="center"
+                    android:padding="12dp"
+                    android:layout_marginEnd="6dp">
+
+                    <TextView
+                        android:id="@+id/tvMatchCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="#C2185B"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="New Matches"
+                        android:textSize="11sp"
+                        android:textColor="#666666"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="@drawable/card_bg"
+                    android:gravity="center"
+                    android:padding="12dp"
+                    android:layout_marginHorizontal="6dp">
+
+                    <TextView
+                        android:id="@+id/tvMessageCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="#C2185B"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Messages"
+                        android:textSize="11sp"
+                        android:textColor="#666666"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="@drawable/card_bg"
+                    android:gravity="center"
+                    android:padding="12dp"
+                    android:layout_marginStart="6dp">
+
+                    <TextView
+                        android:id="@+id/tvRequestCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="#C2185B"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Requests"
+                        android:textSize="11sp"
+                        android:textColor="#666666"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- PROFILE COMPLETION CARD (optional) -->
+            <LinearLayout
+                android:id="@+id/cardCompleteProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_bg"
+                android:padding="16dp"
+                android:layout_marginTop="12dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Complete Your Profile"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Finish your profile to start matching with others."
+                    android:textSize="13sp"
+                    android:textColor="#666666"
+                    android:layout_marginTop="4dp"/>
+
+                <Button
+                    android:id="@+id/btnCompleteProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Complete Now"
+                    android:backgroundTint="#C2185B"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginTop="8dp"/>
+            </LinearLayout>
+
+            <!-- RECOMMENDATIONS SECTION -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recommended for You"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="16dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerRecommendations"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"/>
+
+            <!-- QUICK ACTIONS -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quick Actions"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="16dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <LinearLayout
+                    android:id="@+id/btnQuickSearch"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="@drawable/card_bg"
+                    android:gravity="center"
+                    android:padding="14dp"
+                    android:layout_marginEnd="6dp">
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/ic_search"
+                        app:tint="#C2185B"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Search"
+                        android:textSize="12sp"
+                        android:textColor="#333333"
+                        android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btnQuickMatches"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="@drawable/card_bg"
+                    android:gravity="center"
+                    android:padding="14dp"
+                    android:layout_marginHorizontal="6dp">
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/ic_matches"
+                        app:tint="#C2185B"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Matches"
+                        android:textSize="12sp"
+                        android:textColor="#333333"
+                        android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btnQuickChats"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="@drawable/card_bg"
+                    android:gravity="center"
+                    android:padding="14dp"
+                    android:layout_marginStart="6dp">
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/ic_chat"
+                        app:tint="#C2185B"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chats"
+                        android:textSize="12sp"
+                        android:textColor="#333333"
+                        android:layout_marginTop="4dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- PREMIUM PROMO CARD -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_bg"
+                android:padding="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Go Premium"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#C2185B"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Unlock unlimited chats, see who liked you, and get priority matching."
+                    android:textSize="13sp"
+                    android:textColor="#666666"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- BOTTOM NAV BAR -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
@@ -89,7 +419,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Home"
-                android:textSize="12sp"/>
+                android:textSize="12sp"
+                android:textColor="#C2185B"/>
         </LinearLayout>
 
         <LinearLayout

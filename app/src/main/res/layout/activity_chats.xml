@@ -1,10 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ChatsActivity">
+    android:orientation="vertical"
+    android:background="@drawable/bg_gradient">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- HEADER BAR -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#C2185B"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:layout_marginEnd="12dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Messages"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <!-- PENDING REQUESTS SECTION -->
+    <TextView
+        android:id="@+id/tvPendingHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Connection Requests"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:padding="12dp"
+        android:visibility="gone"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerPending"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="8dp"
+        android:visibility="gone"/>
+
+    <!-- ACCEPTED CHATS SECTION -->
+    <TextView
+        android:id="@+id/tvChatsHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Active Chats"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:padding="12dp"
+        android:visibility="gone"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerChats"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingHorizontal="8dp"
+        android:visibility="gone"/>
+
+    <!-- EMPTY STATE -->
+    <TextView
+        android:id="@+id/tvEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="No messages yet\nConnect with matches to start chatting"
+        android:textSize="16sp"
+        android:textColor="#FFFFFF"
+        android:gravity="center"
+        android:visibility="visible"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <!-- CHAT PANEL (initially hidden) -->
+    <LinearLayout
+        android:id="@+id/chatPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#FFFFFF"
+        android:visibility="gone">
+
+        <!-- Chat partner name bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="#C2185B"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="12dp">
+
+            <ImageView
+                android:id="@+id/imgChatPartner"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="8dp"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                android:id="@+id/tvChatPartnerName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Chat"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+
+            <ImageView
+                android:id="@+id/btnCloseChat"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"/>
+        </LinearLayout>
+
+        <!-- Messages list -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerMessages"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="#FFF5F7"
+            android:padding="8dp"/>
+
+        <!-- Input row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:id="@+id/etMessage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Type a message..."
+                android:textColor="#333333"
+                android:textColorHint="#999999"
+                android:background="@android:drawable/edit_text"
+                android:padding="10dp"
+                android:maxLines="3"/>
+
+            <Button
+                android:id="@+id/btnSend"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:text="Send"
+                android:backgroundTint="#C2185B"
+                android:textColor="#FFFFFF"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

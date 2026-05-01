@@ -12,7 +12,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class EducationDetailsActivity extends AppCompatActivity {
@@ -185,46 +187,37 @@ public class EducationDetailsActivity extends AppCompatActivity {
         }
 
         String uid = auth.getCurrentUser().getUid();
+        DatabaseReference eduRef = FirebaseDatabase.getInstance().getReference("Users").child(uid).child("education");
+        DatabaseReference personalRef = FirebaseDatabase.getInstance().getReference("PersonalInfo").child(uid);
 
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid).child("education").child("qualification")
-                .setValue(spQualification.getSelectedItem().toString());
+        String qualification = spQualification.getSelectedItem().toString();
+        String occupation = spOccupation.getSelectedItem().toString();
+        String sector = spSector.getSelectedItem().toString();
+        String income = spIncome.getSelectedItem().toString();
+        String languages = etLanguages.getText().toString().trim();
+        String otherOccupation = etOtherOccupation.getText().toString().trim();
+        String organization = etOrganization.getText().toString().trim();
+        String city = etCity.getText().toString().trim();
+        String state = etState.getText().toString().trim();
 
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid).child("education").child("occupation")
-                .setValue(spOccupation.getSelectedItem().toString());
-
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid).child("education").child("sector")
-                .setValue(spSector.getSelectedItem().toString());
-
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid).child("education").child("income")
-                .setValue(spIncome.getSelectedItem().toString());
-
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid).child("education").child("language")
-                .setValue(etLanguages.getText().toString().trim());
-
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid).child("education").child("otherOccupation")
-                .setValue(etOtherOccupation.getText().toString().trim());
-
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid).child("education").child("organization")
-                .setValue(etOrganization.getText().toString().trim());
-
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid).child("education").child("city")
-                .setValue(etCity.getText().toString().trim());
-
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid).child("education").child("state")
-                .setValue(etState.getText().toString().trim());
-
-        Toast.makeText(this, "Education Details Saved", Toast.LENGTH_SHORT).show();
-
-        startActivity(new Intent(this, FamilyDetailsActivity.class));
-        finish();
+        Tasks.whenAllSuccess(
+            eduRef.child("qualification").setValue(qualification),
+            eduRef.child("occupation").setValue(occupation),
+            eduRef.child("sector").setValue(sector),
+            eduRef.child("income").setValue(income),
+            eduRef.child("language").setValue(languages),
+            eduRef.child("otherOccupation").setValue(otherOccupation),
+            eduRef.child("organization").setValue(organization),
+            eduRef.child("city").setValue(city),
+            eduRef.child("state").setValue(state),
+            personalRef.child("education").setValue(qualification),
+            personalRef.child("occupation").setValue(occupation),
+            personalRef.child("city").setValue(city)
+        ).addOnSuccessListener(results -> {
+            Toast.makeText(this, "Education Details Saved", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, FamilyDetailsActivity.class));
+            finish();
+        }).addOnFailureListener(e ->
+            Toast.makeText(this, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }
